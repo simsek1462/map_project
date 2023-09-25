@@ -64,38 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
       markers.removeWhere((marker) => marker.markerId.value == markerId);
     });
   }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 12,
-              ),
-              onMapCreated: _onMapCreated,
-              markers: markers,
-              onTap: (LatLng latlng){
-                _addMarker(latlng);
-              },
-            ),
-          ),
-          ElevatedButton(onPressed: (){
-            getDistance();
-
-          }, child: Text("Hesapla"))
-        ],
-      ),
-
-      floatingActionButton: FloatingActionButton(
-        onPressed: _getUserLocation,
-        child: Icon(Icons.location_searching),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
-    );
-  }
+  double _distance=0;
   Future<void> getDistance()async{
     bool locationPermissionGranted = await _checkLocationPermission();
     if (locationPermissionGranted) {
@@ -111,14 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
         position.latitude,
         position.longitude,
       );
-      if(distance<100)
-      {
-        print("hedef konumda ${distance}");
-
-      }
-      else{
-        print(distance);
-      }
+      setState(() {
+        _distance=distance;
+      });
     }
     else {
       // Konum izni yok veya reddedilmişse, izin iste
@@ -164,4 +128,37 @@ class _MyHomePageState extends State<MyHomePage> {
       await _getUserLocation();
     }
   }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: _center,
+                zoom: 12,
+              ),
+              onMapCreated: _onMapCreated,
+              markers: markers,
+              onTap: (LatLng latlng){
+                _addMarker(latlng);
+              },
+            ),
+          ),
+          ElevatedButton(onPressed: (){
+            getDistance();
+          }, child: Text("Hesapla")),
+          Text(_distance.toString()),
+        ],
+      ),
+
+      floatingActionButton: FloatingActionButton(
+        onPressed: _getUserLocation,
+        child: Icon(Icons.location_searching),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+    );
+  }
+
 }
