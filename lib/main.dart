@@ -72,8 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
-      double anlikEnlem=position.latitude;
-      double anlikBoylam=position.longitude;
       var distance =await Geolocator.distanceBetween(
         markers.last.position.latitude,
         markers.last.position.longitude,
